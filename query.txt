@@ -1,0 +1,30 @@
+a) Update
+UPDATE employee_job_table ej
+JOIN employee_profile_table e ON ej.employee_id = e.employee_id
+SET ej.job_id = 4, ej.effective_date = '2020-01-01'
+WHERE e.employee_no = 1002;
+
+b) List all records
+SELECT e.employee_name, e.employee_no, ej.effective_date, j.job_name
+FROM employee_job_table ej
+JOIN employee_profile_table e ON ej.employee_id = e.employee_id
+JOIN job_profile_table j ON ej.job_id = j.job_id;
+
+c) Latest job per employee
+SELECT e.employee_name, e.employee_no, ej_latest.effective_date, j.job_name
+FROM employee_profile_table e
+JOIN employee_job_table ej_latest
+  ON ej_latest.employee_id = e.employee_id
+  AND ej_latest.effective_date = (
+    SELECT MAX(ej2.effective_date)
+    FROM employee_job_table ej2
+    WHERE ej2.employee_id = e.employee_id
+  )
+JOIN job_profile_table j ON ej_latest.job_id = j.job_id;
+
+d) Delete record
+DELETE ej
+FROM employee_job_table ej
+JOIN employee_profile_table e ON ej.employee_id = e.employee_id
+WHERE e.employee_no = 1000
+  AND ej.effective_date = '2020-01-01';
